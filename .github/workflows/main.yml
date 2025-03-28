@@ -1,29 +1,26 @@
-name: Check GitHub Runner Status
+name: Check GitHub Runner
 
-on:  
-  push:  
-    branches: [main]  
-  workflow_dispatch:  
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-jobs:  
-  check-runner:  
-    runs-on: ubuntu-latest  
-    steps:  
-      - name: Check Runner Info  
-        run: |  
-          echo "Runner is active and working."  
-          echo "Running on $(uname -a)"  
-          echo "Checking system resources..."  
-          free -h  
-          df -h  
-          uptime  
+jobs:
+  check-runner:
+    runs-on: windows-latest
+    steps:
+      - name: Check Runner Availability
+        run: |
+          echo "Checking GitHub Runner availability..."
+          systeminfo
 
-      - name: Test Internet Access  
-        run: |  
-          echo "Testing internet access..."  
-          curl -Is https://github.com | head -n 5  
+      - name: Check Disk Space
+        run: |
+          echo "Checking available disk space..."
+          wmic logicaldisk get size,freespace,caption
 
-      - name: Check Rate Limits  
-        run: |  
-          echo "Checking GitHub API rate limits..."  
-          curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/rate_limit  
+      - name: Check Rate Limit
+        run: |
+          echo "Checking GitHub API rate limit..."
+          curl -s https://api.github.com/rate_limit | jq .rate
