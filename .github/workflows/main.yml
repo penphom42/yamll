@@ -1,0 +1,29 @@
+name: Check GitHub Runner Status
+
+on:  
+  push:  
+    branches: [main]  
+  workflow_dispatch:  
+
+jobs:  
+  check-runner:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Check Runner Info  
+        run: |  
+          echo "Runner is active and working."  
+          echo "Running on $(uname -a)"  
+          echo "Checking system resources..."  
+          free -h  
+          df -h  
+          uptime  
+
+      - name: Test Internet Access  
+        run: |  
+          echo "Testing internet access..."  
+          curl -Is https://github.com | head -n 5  
+
+      - name: Check Rate Limits  
+        run: |  
+          echo "Checking GitHub API rate limits..."  
+          curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/rate_limit  
